@@ -80,6 +80,22 @@ export default function Dashboard({ toggleTheme, theme, activeTab, setActiveTab 
   const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
+  const [greeting, setGreeting] = useState('');
+
+  // Dynamic Greeting Logic
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) setGreeting('Good morning');
+      else if (hour >= 12 && hour < 17) setGreeting('Good afternoon');
+      else if (hour >= 17 && hour < 21) setGreeting('Good evening');
+      else setGreeting('Good night');
+    };
+
+    updateGreeting();
+    const interval = setInterval(updateGreeting, 60000); // Sync every minute
+    return () => clearInterval(interval);
+  }, []);
 
   // Listeners
   useEffect(() => {
@@ -270,7 +286,7 @@ export default function Dashboard({ toggleTheme, theme, activeTab, setActiveTab 
         <div className="p-8 max-w-7xl mx-auto space-y-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h1 className="text-3xl font-extrabold mb-1">Morning, {user?.displayName?.split(' ')[0]}!</h1>
+              <h1 className="text-3xl font-extrabold mb-1">{greeting || 'Welcome'}, {user?.displayName?.split(' ')[0]}!</h1>
               <p className="text-slate-500 dark:text-slate-400 text-sm">Every day is a new chance to build yourself.</p>
             </div>
             <button 
