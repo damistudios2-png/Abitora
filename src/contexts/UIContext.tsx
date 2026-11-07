@@ -7,12 +7,15 @@ interface UIContextType {
   isSidebarCollapsed: boolean;
   setSidebarCollapsed: (collapsed: boolean) => void;
   toggleSidebar: () => void;
+  showToast: (message: string, type?: 'success' | 'error') => void;
+  toast: { message: string; type: 'success' | 'error' } | null;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
 
 export function UIProvider({ children }: { children: React.ReactNode }) {
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(() => {
     // Initial check for viewport width
     if (typeof window !== 'undefined') {
@@ -25,10 +28,18 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   const closeUpgrade = () => setIsUpgradeOpen(false);
   const toggleSidebar = () => setSidebarCollapsed(prev => !prev);
 
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 4000);
+  };
+
   return (
     <UIContext.Provider value={{ 
       isUpgradeOpen, openUpgrade, closeUpgrade, 
-      isSidebarCollapsed, setSidebarCollapsed, toggleSidebar 
+      isSidebarCollapsed, setSidebarCollapsed, toggleSidebar,
+      toast, showToast
     }}>
       {children}
     </UIContext.Provider>

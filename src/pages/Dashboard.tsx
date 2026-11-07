@@ -72,7 +72,7 @@ interface DashboardProps {
 
 export default function Dashboard({ toggleTheme, theme, activeTab, setActiveTab }: DashboardProps) {
   const { user, userProfile } = useAuth();
-  const { toggleSidebar } = useUI();
+  const { toggleSidebar, showToast } = useUI();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [completions, setCompletions] = useState<Completion[]>([]);
   const [loading, setLoading] = useState(true);
@@ -177,9 +177,16 @@ export default function Dashboard({ toggleTheme, theme, activeTab, setActiveTab 
       }
 
       await setDoc(habitDocRef, payload, { merge: true });
+      showToast(
+        habitToEdit 
+          ? 'Your ritual adjustments have been preserved.' 
+          : 'Your new habit has been successfully created. Time to build consistency!',
+        'success'
+      );
       setHabitToEdit(null);
-    } catch (error) {
+    } catch (error: any) {
       handleFirestoreError(error, habitToEdit ? OperationType.UPDATE : OperationType.CREATE, `users/${user.uid}/habits`);
+      showToast(error.message || 'We encountered an error securing your ritual.', 'error');
     }
   };
 
@@ -214,10 +221,12 @@ export default function Dashboard({ toggleTheme, theme, activeTab, setActiveTab 
     if (!user || !habitToDelete) return;
     try {
       await deleteDoc(doc(db, 'users', user.uid, 'habits', habitToDelete.id));
+      showToast('Ritual abandoned. Your library has been updated.', 'success');
       setIsDeleteModalOpen(false);
       setHabitToDelete(null);
-    } catch (error) {
+    } catch (error: any) {
       handleFirestoreError(error, OperationType.DELETE, `users/${user.uid}/habits/${habitToDelete.id}`);
+      showToast(error.message || 'Error removing ritual.', 'error');
     }
   };
 

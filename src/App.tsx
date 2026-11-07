@@ -10,6 +10,7 @@ import CalendarPage from './pages/CalendarPage';
 import Settings from './pages/Settings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import UpgradeModal from './components/UpgradeModal';
+import Toast from './components/Toast';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -67,6 +68,7 @@ function AppContent() {
     <>
       {renderPage()}
       <UpgradeModal isOpen={isUpgradeOpen} onClose={closeUpgrade} />
+      <Toast />
     </>
   );
 }

@@ -55,7 +55,7 @@ interface Habit {
 
 export default function MyHabits({ toggleTheme, theme, activeTab, setActiveTab }: MyHabitsProps) {
   const { user } = useAuth();
-  const { toggleSidebar } = useUI();
+  const { toggleSidebar, showToast } = useUI();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -95,9 +95,11 @@ export default function MyHabits({ toggleTheme, theme, activeTab, setActiveTab }
         ...habitData,
         updatedAt: serverTimestamp()
       });
+      showToast('Your ritual adjustments have been preserved.', 'success');
       setHabitToEdit(null);
-    } catch (error) {
+    } catch (error: any) {
        handleFirestoreError(error, OperationType.UPDATE, `users/${user.uid}/habits/${habitToEdit.id}`);
+       showToast(error.message || 'We encountered an error securing your ritual.', 'error');
     }
   };
 
@@ -105,10 +107,12 @@ export default function MyHabits({ toggleTheme, theme, activeTab, setActiveTab }
     if (!user || !habitToDelete) return;
     try {
       await deleteDoc(doc(db, 'users', user.uid, 'habits', habitToDelete.id));
+      showToast('Ritual abandoned. Your library has been updated.', 'success');
       setIsDeleteModalOpen(false);
       setHabitToDelete(null);
-    } catch (error) {
+    } catch (error: any) {
        handleFirestoreError(error, OperationType.DELETE, `users/${user.uid}/habits/${habitToDelete.id}`);
+       showToast(error.message || 'Error removing ritual.', 'error');
     }
   };
 
