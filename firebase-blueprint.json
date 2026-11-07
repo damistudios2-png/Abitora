@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user preferences and subscription status.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The unique Firebase Auth ID." },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "photoURL": { "type": "string" },
+        "isPro": { "type": "boolean", "description": "Whether the user has a pro subscription." },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "email", "isPro", "createdAt"]
+    },
+    "Habit": {
+      "title": "Habit",
+      "description": "A habit definition created by the user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "category": { "type": "string", "enum": ["Health", "Mindset", "Productivity", "Social", "Finance", "Other"] },
+        "frequency": { "type": "string", "enum": ["daily", "weekly"] },
+        "daysOfWeek": { "type": "array", "description": "Days of the week if weekly", "maxLength": 7 },
+        "color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "isArchived": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "name", "category", "frequency", "isArchived", "createdAt"]
+    },
+    "Completion": {
+      "title": "Habit Completion",
+      "description": "A record of a habit being completed on a specific date.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "description": "Format: YYYY-MM-DD_habitId" },
+        "habitId": { "type": "string" },
+        "userId": { "type": "string" },
+        "date": { "type": "string", "format": "date", "description": "YYYY-MM-DD" },
+        "completed": { "type": "boolean" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "habitId", "userId", "date", "completed", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Root user profile document."
+    },
+    "/users/{userId}/habits/{habitId}": {
+      "schema": "Habit",
+      "description": "User-defined habits."
+    },
+    "/users/{userId}/completions/{completionId}": {
+      "schema": "Completion",
+      "description": "Daily completion logs for habits."
+    }
+  }
+}

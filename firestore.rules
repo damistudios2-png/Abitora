@@ -1,0 +1,125 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net: Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Global Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Entity Validations ---
+
+    function isValidUserProfile(data) {
+      return data.userId == request.auth.uid
+        && data.email is string && data.email.size() <= 256
+        && (data.get('displayName', null) == null || (data.displayName is string && data.displayName.size() <= 100))
+        && (data.get('photoURL', null) == null || (data.photoURL is string && data.photoURL.size() <= 1000))
+        && data.isPro is bool;
+    }
+
+    function isValidHabit(data, userId) {
+      return data.userId == userId
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && (data.get('description', null) == null || (data.description is string && data.description.size() <= 500))
+        && data.category in ['Health', 'Mindset', 'Productivity', 'Social', 'Finance', 'Other']
+        && data.frequency in ['daily', 'weekly']
+        && (data.get('daysOfWeek', null) == null || (data.daysOfWeek is list && data.daysOfWeek.size() <= 7))
+        && data.color is string && data.color.matches('^#[0-9a-fA-F]{6}$')
+        && data.isArchived is bool;
+    }
+
+    function isValidCompletion(data, userId) {
+      return data.userId == userId
+        && data.habitId is string && data.habitId.size() <= 128
+        && data.date is string && data.date.matches('^\\d{4}-\\d{2}-\\d{2}$')
+        && data.completed is bool;
+    }
+
+    // --- Match Blocks ---
+
+    // User Profile
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) 
+        && isValidId(userId)
+        && isValidUserProfile(incoming()) 
+        && incoming().isPro == false
+        && incoming().createdAt == request.time
+        && incoming().keys().hasAll(['userId', 'email', 'isPro', 'createdAt'])
+        && incoming().keys().hasOnly(['userId', 'email', 'displayName', 'photoURL', 'isPro', 'createdAt', 'updatedAt']);
+      allow update: if isOwner(userId)
+        && isValidUserProfile(incoming())
+        && incoming().userId == existing().userId
+        && incoming().email == existing().email
+        && incoming().isPro == existing().isPro // Prevent self-upgrade
+        && incoming().createdAt == existing().createdAt
+        && (incoming().get('updatedAt', null) == null || incoming().updatedAt == request.time)
+        && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'updatedAt']);
+    }
+
+    // Habits
+    match /users/{userId}/habits/{habitId} {
+      allow list: if isOwner(userId);
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && isValidId(habitId)
+        && isValidHabit(incoming(), userId)
+        && incoming().createdAt == request.time
+        && incoming().keys().hasAll(['id', 'userId', 'name', 'category', 'frequency', 'isArchived', 'createdAt'])
+        && incoming().keys().hasOnly(['id', 'userId', 'name', 'description', 'category', 'frequency', 'daysOfWeek', 'color', 'isArchived', 'createdAt', 'updatedAt']);
+      allow update: if isOwner(userId)
+        && isValidHabit(incoming(), userId)
+        && incoming().id == existing().id
+        && incoming().userId == existing().userId
+        && incoming().createdAt == existing().createdAt
+        && (incoming().get('updatedAt', null) == null || incoming().updatedAt == request.time)
+        && incoming().diff(existing()).affectedKeys().hasOnly(['name', 'description', 'category', 'frequency', 'daysOfWeek', 'color', 'isArchived', 'updatedAt']);
+      allow delete: if isOwner(userId);
+    }
+
+    // Completions
+    match /users/{userId}/completions/{completionId} {
+      allow list: if isOwner(userId);
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && isValidId(completionId)
+        && isValidCompletion(incoming(), userId)
+        && incoming().timestamp == request.time
+        && exists(/databases/$(database)/documents/users/$(userId)/habits/$(incoming().habitId))
+        && incoming().keys().hasAll(['id', 'habitId', 'userId', 'date', 'completed', 'timestamp'])
+        && incoming().keys().hasOnly(['id', 'habitId', 'userId', 'date', 'completed', 'timestamp']);
+      allow update: if isOwner(userId)
+        && isValidCompletion(incoming(), userId)
+        && incoming().id == existing().id
+        && incoming().userId == existing().userId
+        && incoming().habitId == existing().habitId
+        && incoming().date == existing().date
+        && (incoming().get('timestamp', null) == null || incoming().timestamp == request.time)
+        && incoming().diff(existing()).affectedKeys().hasOnly(['completed', 'timestamp']);
+      allow delete: if isOwner(userId);
+    }
+  }
+}
+
+

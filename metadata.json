@@ -1,0 +1,6 @@
+{
+  "name": "Abitora",
+  "description": "Build Better Habits. A modern, professional habit-tracking SaaS application for building routines and celebrating consistency.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
