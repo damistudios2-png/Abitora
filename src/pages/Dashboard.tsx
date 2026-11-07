@@ -25,7 +25,8 @@ import {
   ChevronRight,
   MoreVertical,
   LayoutDashboard,
-  Edit2
+  Edit2,
+  Menu
 } from 'lucide-react';
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isToday, subDays, startOfToday } from 'date-fns';
 import { motion, AnimatePresence } from 'motion/react';
@@ -33,6 +34,7 @@ import { handleFirestoreError, OperationType } from '../lib/db-utils';
 import Sidebar from '../components/Sidebar';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useUI } from '../contexts/UIContext';
 
 import HabitModal from '../components/HabitModal';
 
@@ -70,6 +72,7 @@ interface DashboardProps {
 
 export default function Dashboard({ toggleTheme, theme, activeTab, setActiveTab }: DashboardProps) {
   const { user, userProfile } = useAuth();
+  const { toggleSidebar } = useUI();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [completions, setCompletions] = useState<Completion[]>([]);
   const [loading, setLoading] = useState(true);
@@ -239,12 +242,20 @@ export default function Dashboard({ toggleTheme, theme, activeTab, setActiveTab 
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} toggleTheme={toggleTheme} theme={theme} />
 
       <main className="flex-1 overflow-y-auto">
-        <header className="h-16 flex items-center justify-between px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+        <header className="h-16 flex items-center justify-between px-6 sm:px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
           <div className="flex items-center gap-4">
             <h2 className="font-bold text-lg capitalize">{activeTab}</h2>
             <div className="h-4 w-px bg-slate-200 dark:bg-slate-800" />
-            <span className="text-sm text-slate-500 dark:text-slate-400">{format(new Date(), 'EEEE, MMMM do')}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400 truncate max-w-[120px] sm:max-w-none">{format(new Date(), 'EEEE, MMM do')}</span>
           </div>
+
+          {/* Mobile Hamburger Button */}
+          <button 
+            onClick={toggleSidebar}
+            className="lg:hidden p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
         </header>
 
         <div className="p-8 max-w-7xl mx-auto space-y-8">

@@ -22,12 +22,15 @@ import {
   CheckCircle2,
   MoreVertical,
   Clock,
-  Tag
+  Tag,
+  Menu
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'motion/react';
 import Sidebar from '../components/Sidebar';
 import { handleFirestoreError, OperationType } from '../lib/db-utils';
+import { useUI } from '../contexts/UIContext';
+
 
 import HabitModal from '../components/HabitModal';
 
@@ -52,6 +55,7 @@ interface Habit {
 
 export default function MyHabits({ toggleTheme, theme, activeTab, setActiveTab }: MyHabitsProps) {
   const { user } = useAuth();
+  const { toggleSidebar } = useUI();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -113,10 +117,18 @@ export default function MyHabits({ toggleTheme, theme, activeTab, setActiveTab }
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} toggleTheme={toggleTheme} theme={theme} />
 
       <main className="flex-1 overflow-y-auto">
-        <header className="h-16 flex items-center justify-between px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+        <header className="h-16 flex items-center justify-between px-6 sm:px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
           <div className="flex items-center gap-4">
             <h2 className="font-bold text-lg capitalize">{activeTab}</h2>
           </div>
+
+          {/* Mobile Hamburger Button */}
+          <button 
+            onClick={toggleSidebar}
+            className="lg:hidden p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
         </header>
 
         <div className="p-8 max-w-7xl mx-auto space-y-8">

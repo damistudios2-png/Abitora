@@ -10,7 +10,8 @@ import {
   ChevronRight,
   Calendar as CalendarIcon,
   CheckCircle2,
-  Trophy
+  Trophy,
+  Menu
 } from 'lucide-react';
 import { 
   format, 
@@ -27,6 +28,8 @@ import {
 } from 'date-fns';
 import Sidebar from '../components/Sidebar';
 import { handleFirestoreError, OperationType } from '../lib/db-utils';
+import { useUI } from '../contexts/UIContext';
+
 
 interface CalendarPageProps {
   toggleTheme: () => void;
@@ -37,6 +40,7 @@ interface CalendarPageProps {
 
 export default function CalendarPage({ toggleTheme, theme, activeTab, setActiveTab }: CalendarPageProps) {
   const { user } = useAuth();
+  const { toggleSidebar } = useUI();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [habits, setHabits] = useState<any[]>([]);
   const [completions, setCompletions] = useState<any[]>([]);
@@ -80,10 +84,18 @@ export default function CalendarPage({ toggleTheme, theme, activeTab, setActiveT
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} toggleTheme={toggleTheme} theme={theme} />
 
       <main className="flex-1 overflow-y-auto">
-        <header className="h-16 flex items-center justify-between px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+        <header className="h-16 flex items-center justify-between px-6 sm:px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
           <div className="flex items-center gap-4">
             <h2 className="font-bold text-lg capitalize">{activeTab}</h2>
           </div>
+
+          {/* Mobile Hamburger Button */}
+          <button 
+            onClick={toggleSidebar}
+            className="lg:hidden p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
         </header>
 
         <div className="p-8 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">

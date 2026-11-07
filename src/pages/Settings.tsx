@@ -13,7 +13,8 @@ import {
   ChevronRight,
   Database,
   Cloud,
-  Loader2
+  Loader2,
+  Menu
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { db } from '../lib/firebase';
@@ -28,7 +29,7 @@ interface SettingsProps {
 
 export default function Settings({ toggleTheme, theme, activeTab, setActiveTab }: SettingsProps) {
   const { user, signOut, userProfile, updateDisplayName } = useAuth();
-  const { openUpgrade } = useUI();
+  const { openUpgrade, toggleSidebar } = useUI();
   const [exporting, setExporting] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(user?.displayName || '');
@@ -143,10 +144,18 @@ export default function Settings({ toggleTheme, theme, activeTab, setActiveTab }
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} toggleTheme={toggleTheme} theme={theme} />
 
       <main className="flex-1 overflow-y-auto">
-        <header className="h-16 flex items-center justify-between px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+        <header className="h-16 flex items-center justify-between px-6 sm:px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
           <div className="flex items-center gap-4">
             <h2 className="font-bold text-lg capitalize">{activeTab}</h2>
           </div>
+
+          {/* Mobile Hamburger Button */}
+          <button 
+            onClick={toggleSidebar}
+            className="lg:hidden p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
         </header>
 
         <div className="p-8 max-w-3xl mx-auto space-y-12">

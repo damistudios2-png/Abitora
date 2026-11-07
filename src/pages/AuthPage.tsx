@@ -89,7 +89,7 @@ export default function AuthPage({ toggleTheme, theme }: AuthPageProps) {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 font-['Plus_Jakarta_Sans',sans-serif]">
       {/* Theme Toggle */}
-      <div className="absolute top-8 right-8">
+      <div className="absolute top-4 right-4">
         <button 
           onClick={toggleTheme}
           className="p-3 rounded-full bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 transition-all hover:scale-105"
