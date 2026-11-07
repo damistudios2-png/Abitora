@@ -66,7 +66,7 @@ export default function Sidebar({ activeTab, setActiveTab, toggleTheme, theme }:
         )}
       >
         <div className="p-8 flex items-center gap-3">
-          <img src="/src/assets/images/abitora_abstract_logo_1794047912747.jpg" alt="Logo" className="w-8 h-8 rounded-lg shrink-0" />
+          <img src="/assets/images/abitora_abstract_logo_1794047912747.jpg" alt="Logo" className="w-8 h-8 rounded-lg shrink-0" />
           {!collapsed && <span className="text-xl font-bold tracking-tight whitespace-nowrap">Abitora</span>}
         </div>
 

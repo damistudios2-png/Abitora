@@ -53,7 +53,7 @@ export default function PrivacyPolicy({ toggleTheme, theme }: PrivacyPolicyProps
             Back to Home
           </button>
           <div className="flex items-center gap-2">
-            <img src="/src/assets/images/abitora_abstract_logo_1794047912747.jpg" alt="Logo" className="w-6 h-6 rounded" />
+            <img src="/assets/images/abitora_abstract_logo_1794047912747.jpg" alt="Logo" className="w-6 h-6 rounded" />
             <span className="font-bold tracking-tight">Abitora</span>
           </div>
         </div>

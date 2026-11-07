@@ -105,7 +105,7 @@ export default function AuthPage({ toggleTheme, theme }: AuthPageProps) {
       >
         <div className="text-center mb-8">
           <img 
-            src="/src/assets/images/abitora_abstract_logo_1794047912747.jpg" 
+            src="/assets/images/abitora_abstract_logo_1794047912747.jpg" 
             alt="Abitora Logo" 
             className="w-14 h-14 rounded-2xl mx-auto mb-4 shadow-xl"
           />

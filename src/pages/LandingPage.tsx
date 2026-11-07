@@ -52,13 +52,13 @@ export default function LandingPage({ toggleTheme, theme }: LandingPageProps) {
       name: "Sarah Jenkins",
       role: "Product Designer",
       content: "Abitora transformed my morning routine. The minimalist design helps me focus on what matters most—consistency.",
-      avatar: "/src/assets/images/user_avatar_1_1794047912962.jpg"
+      avatar: "/assets/images/user_avatar_1_1794047912962.jpg"
     },
     {
       name: "Marcus Chen",
       role: "Software Engineer",
       content: "The analytics are exactly what I needed. Seeing my progress visually makes building habits feel like a game I'm winning.",
-      avatar: "/src/assets/images/user_avatar_2_1794047913389.jpg"
+      avatar: "/assets/images/user_avatar_2_1794047913389.jpg"
     }
   ];
 
@@ -70,7 +70,7 @@ export default function LandingPage({ toggleTheme, theme }: LandingPageProps) {
           {/* Zone 1: Brand */}
           <div className="flex items-center gap-2 shrink-0">
             <img 
-              src="/src/assets/images/abitora_abstract_logo_1794047912747.jpg" 
+              src="/assets/images/abitora_abstract_logo_1794047912747.jpg" 
               alt="Abitora Logo" 
               className="w-8 h-8 rounded-lg shadow-sm"
             />
@@ -183,7 +183,7 @@ export default function LandingPage({ toggleTheme, theme }: LandingPageProps) {
             <div className="absolute -inset-4 bg-gradient-to-tr from-emerald-500/20 to-blue-500/20 blur-3xl opacity-50 -z-10"></div>
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden bg-white dark:bg-slate-900">
               <img 
-                src="/src/assets/images/abitora_dashboard_preview_1794047912895.jpg" 
+                src="/assets/images/abitora_dashboard_preview_1794047912895.jpg" 
                 alt="Abitora Dashboard" 
                 className="w-full h-auto"
               />
@@ -336,7 +336,7 @@ export default function LandingPage({ toggleTheme, theme }: LandingPageProps) {
           <div className="flex flex-col md:flex-row justify-between gap-12 mb-20">
             <div className="max-w-xs">
               <div className="flex items-center gap-2 mb-6">
-                <img src="/src/assets/images/abitora_abstract_logo_1794047912747.jpg" alt="Logo" className="w-6 h-6 rounded" />
+                <img src="/assets/images/abitora_abstract_logo_1794047912747.jpg" alt="Logo" className="w-6 h-6 rounded" />
                 <span className="text-lg font-bold">Abitora</span>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
